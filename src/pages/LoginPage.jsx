@@ -2,6 +2,10 @@ import React from 'react'
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { BiLogInCircle } from "react-icons/bi"
+import { useDispatch,useSelector } from 'react-redux'
+import { getUserInfo, login,reset } from '../features/auth/authSlice'
+import { toast } from 'react-toastify'
+import Spinner from '../components/Spinner'
 
 const LoginPage = () => {
 
@@ -12,6 +16,11 @@ const LoginPage = () => {
 
     const { email, password } = formData
 
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+    
+      const {user,isError,isSuccess,isLoading,message } = useSelector((state)=> state.auth)
+
     const handleChange = (e) => {
         setFormData((prev) => ({
             ...prev,
@@ -20,15 +29,37 @@ const LoginPage = () => {
         )
     }
 
-    const handleSubmit = () => {
-        
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const userData = {
+                email,
+                password,
+              }
+              dispatch(login(userData))
     }
 
+     useEffect(()=> {
+        if(isError){
+          toast.error(message)
+        }
+    
+        if(isSuccess || user){
+          navigate("/dashboard")
+        }
+    
+        dispatch(reset())
+        dispatch(getUserInfo())
+    },[isError,isSuccess,user,navigate,dispatch])
 
   return (
     <>
     <div className="container auth__container">
         <h1 className="main__title">Login <BiLogInCircle /></h1>
+
+
+        { isLoading && <Spinner/> }
+
 
         <form className="auth__form">
             <input type="text"

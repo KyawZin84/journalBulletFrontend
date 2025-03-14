@@ -8,6 +8,8 @@ import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ResetPasswordPage from "./pages/ResetPasswordPage"
 import ActivatePage from "./pages/ActivatePage"
+import NotFoundPage from "./pages/NotFoundPage"
+import ResetPasswordPageConfirm from "./pages/ResetPasswordPageConfirm"
 
 function App() {
   return (
@@ -18,9 +20,12 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/account-activate" element={<ActivatePage />} />
+          <Route path="/activate/:uid/:token" element={<ActivatePage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordPageConfirm />} />
+          <Route path="/dashboard" element={<Dashboard />} />\
+          
+          <Route path="*" element={<NotFoundPage/>}/>
         </Routes>
       </Router>
       <ToastContainer />

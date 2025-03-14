@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {BiUser} from "react-icons/bi"
 import { toast } from 'react-toastify'
 import { useDispatch,useSelector } from 'react-redux'
-import { register } from '../features/auth/authSlice'
+import { register,reset } from '../features/auth/authSlice'
+import {useNavigate} from 'react-router-dom'
+import Spinner from '../components/Spinner'
 
 const RegisterPage = () => {
 
@@ -17,6 +19,7 @@ const RegisterPage = () => {
   const {first_name,last_name,email,password,re_password} = formData
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {user,isError,isSuccess,isLoading,message } = useSelector((state)=> state.auth)
 
@@ -43,9 +46,24 @@ const RegisterPage = () => {
       dispatch(register(userData))
     }
   }
+
+  useEffect(()=> {
+    if(isError){
+      toast.error(message)
+    }
+
+    if(isSuccess || user){
+      navigate("/")
+      toast.success("An activation email has been sent to your email. Please check your email")
+    }
+
+    dispatch(reset())
+    
+  },[isError,isSuccess,user,navigate,dispatch])
   return (
     <div className="container auth__container">
     <h1 className="main__title">Register <BiUser/> </h1>
+    { isLoading && <Spinner/> }
 
     <form className="auth__form">
         <input type="text"
